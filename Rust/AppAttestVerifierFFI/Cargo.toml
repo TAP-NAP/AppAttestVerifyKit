@@ -1,0 +1,17 @@
+[package]
+name = "app_attest_verifier_ffi"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+apple_app_attest_attestation = { git = "https://github.com/TAP-NAP/attestation_assertion_verifier", rev = "f93e42f83d1f52cfd3bc41678713f424d30fc921", package = "apple_app_attest_attestation" }
+base64 = "0.22"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[dev-dependencies]
+tempfile = "3.10"

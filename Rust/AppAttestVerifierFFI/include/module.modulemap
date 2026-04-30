@@ -1,0 +1,4 @@
+module AppAttestVerifierFFI [system] {
+    header "AppAttestVerifierFFI.h"
+    export *
+}

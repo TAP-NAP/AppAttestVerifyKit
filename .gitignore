@@ -3,6 +3,8 @@
 /Packages
 xcuserdata/
 DerivedData/
+Rust/AppAttestVerifierFFI/target/
+Frameworks/AppAttestVerifierFFI.xcframework/
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
