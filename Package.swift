@@ -1,46 +1,7 @@
 // swift-tools-version: 6.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
-import Foundation
 import PackageDescription
-
-let rustFFIPath = "Frameworks/AppAttestVerifierFFI.xcframework"
-let hasLocalRustFFI = FileManager.default.fileExists(atPath: rustFFIPath)
-
-// The Rust verifier is generated locally and intentionally not committed.
-// SwiftPM manifests are evaluated before build scripts run, so this package
-// exposes the binary target only after Scripts/build-xcframework.sh has created
-// the XCFramework at the expected path.
-var targets: [Target] = []
-
-if hasLocalRustFFI {
-    targets.append(
-        .binaryTarget(
-            name: "AppAttestVerifierFFI",
-            path: rustFFIPath
-        )
-    )
-}
-
-targets.append(
-    .target(
-        name: "AppAttestVerifyKit",
-        dependencies: hasLocalRustFFI ? ["AppAttestVerifierFFI"] : [],
-        resources: [
-            .process("Resources"),
-        ]
-    )
-)
-
-targets.append(
-    .testTarget(
-        name: "AppAttestVerifyKitTests",
-        dependencies: ["AppAttestVerifyKit"],
-        resources: [
-            .process("Fixtures"),
-        ]
-    )
-)
 
 let package = Package(
     name: "AppAttestVerifyKit",
@@ -54,6 +15,28 @@ let package = Package(
             targets: ["AppAttestVerifyKit"]
         ),
     ],
-    targets: targets,
+    targets: [
+        // Release builds consume the Rust verifier from the matching GitHub
+        // Release asset so SwiftPM users do not need a local Rust toolchain.
+        .binaryTarget(
+            name: "AppAttestVerifierFFI",
+            url: "https://github.com/TAP-NAP/AppAttestVerifyKit/releases/download/v0.1.0/AppAttestVerifierFFI.xcframework.zip",
+            checksum: "bcff73754d858b824d5eeff0cd20ae21d67f33bfbcaf106bf3cbac88e93c0fa2"
+        ),
+        .target(
+            name: "AppAttestVerifyKit",
+            dependencies: ["AppAttestVerifierFFI"],
+            resources: [
+                .process("Resources"),
+            ]
+        ),
+        .testTarget(
+            name: "AppAttestVerifyKitTests",
+            dependencies: ["AppAttestVerifyKit"],
+            resources: [
+                .process("Fixtures"),
+            ]
+        ),
+    ],
     swiftLanguageModes: [.v6]
 )
