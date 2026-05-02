@@ -5,6 +5,7 @@ xcuserdata/
 DerivedData/
 Rust/AppAttestVerifierFFI/target/
 Frameworks/AppAttestVerifierFFI.xcframework/
+.release/
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc

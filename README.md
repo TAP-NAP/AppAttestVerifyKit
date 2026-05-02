@@ -136,6 +136,41 @@ Scripts/build-xcframework.sh
 The script rebuilds the Rust static libraries for iOS device, iOS simulator,
 and macOS, then replaces `Frameworks/AppAttestVerifierFFI.xcframework`.
 
+## Package A GitHub Release Binary
+
+To publish a prebuilt binary for SwiftPM consumers, build a release archive:
+
+```sh
+Scripts/package-release-binary.sh v0.1.0 TAP-NAP/AppAttestVerifyKit
+```
+
+The release artifact is a zip file because SwiftPM remote binary targets expect
+a zipped XCFramework artifact.
+
+The script rebuilds the local XCFramework, creates:
+
+```text
+.release/AppAttestVerifierFFI.xcframework.zip
+.release/AppAttestVerifierFFI.xcframework.zip.checksum
+.release/AppAttestVerifierFFI.binaryTarget.swift
+```
+
+Upload the zip file to the matching GitHub Release:
+
+```sh
+git tag v0.1.0
+git push origin v0.1.0
+
+gh release create v0.1.0 \
+  .release/AppAttestVerifierFFI.xcframework.zip \
+  --title "v0.1.0" \
+  --notes "Rust-backed App Attest verifier binary"
+```
+
+Then copy the generated `binaryTarget` snippet into `Package.swift` if this
+package should consume the release asset automatically instead of requiring a
+local `Scripts/build-xcframework.sh` step.
+
 ## Example App
 
 Open or build after generating the local XCFramework:
