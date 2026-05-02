@@ -139,6 +139,7 @@ private struct AttestationTab: View {
                 .disabled(viewModel.isWorking)
             }
         }
+        .appAttestInteractiveKeyboardDismissal()
     }
 }
 
@@ -196,5 +197,17 @@ private struct AssertionTab: View {
                 .disabled(viewModel.isWorking || viewModel.storedState == nil)
             }
         }
+        .appAttestInteractiveKeyboardDismissal()
+    }
+}
+
+private extension View {
+    /// Shared keyboard behavior for the demo's scrollable input surfaces.
+    ///
+    /// Forms in this app are primarily data-entry tools, so dragging the form
+    /// should naturally pull the keyboard away instead of forcing a separate
+    /// Done button or tap target.
+    func appAttestInteractiveKeyboardDismissal() -> some View {
+        scrollDismissesKeyboard(.interactively)
     }
 }
