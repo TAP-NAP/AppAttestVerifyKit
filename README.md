@@ -144,6 +144,16 @@ To publish a prebuilt binary for SwiftPM consumers, build a release archive:
 Scripts/package-release-binary.sh v0.1.0 TAP-NAP/AppAttestVerifyKit
 ```
 
+Add `--update-package` when preparing the SwiftPM release tag:
+
+```sh
+Scripts/package-release-binary.sh v0.1.0 TAP-NAP/AppAttestVerifyKit --update-package
+```
+
+That option replaces `Package.swift` with a release manifest that points the
+`AppAttestVerifierFFI` binary target at the generated GitHub Release URL and
+checksum. Commit that `Package.swift` change before creating the tag.
+
 The release artifact is a zip file because SwiftPM remote binary targets expect
 a zipped XCFramework artifact.
 
@@ -158,7 +168,11 @@ The script rebuilds the local XCFramework, creates:
 Upload the zip file to the matching GitHub Release:
 
 ```sh
+git add Package.swift
+git commit -m "Use release binary target for v0.1.0"
+
 git tag v0.1.0
+git push origin main
 git push origin v0.1.0
 
 gh release create v0.1.0 \
@@ -166,10 +180,6 @@ gh release create v0.1.0 \
   --title "v0.1.0" \
   --notes "Rust-backed App Attest verifier binary"
 ```
-
-Then copy the generated `binaryTarget` snippet into `Package.swift` if this
-package should consume the release asset automatically instead of requiring a
-local `Scripts/build-xcframework.sh` step.
 
 ## Example App
 
